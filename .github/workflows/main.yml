@@ -1,0 +1,29 @@
+name: Push or Pull Request
+
+on: 
+  [push, pull_request]
+
+env:
+  PUSH_MSG: "C'est un push !"
+  PR_MSG: "C'est une pull request !"
+
+jobs:
+  push-job:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Show push message
+        run: echo "$PUSH_MSG"
+
+  pr-job:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Show pull request message
+        run: echo "$PR_MSG"

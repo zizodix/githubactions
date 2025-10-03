@@ -1,0 +1,12 @@
+name: Issue Opened Notifier
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  say-issue-created:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Message
+        run: echo "issue créée"

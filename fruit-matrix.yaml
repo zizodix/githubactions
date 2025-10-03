@@ -1,0 +1,19 @@
+name: Matrix Fruits
+
+on:
+  workflow_dispatch:
+
+jobs:
+  say-phrase:
+    # Si un job de la matrice échoue, les autres en cours sont annulés
+    strategy:
+      fail-fast: true
+      matrix:
+        fruit: [tomate, banane, concombre, ananas]
+        name: [Axel, Kevin, Romain]
+
+    name: "${{ matrix.name }} mange une ${{ matrix.fruit }}"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Phrase du jour
+        run: echo "${{ matrix.name }} mange une ${{ matrix.fruit }}, et il/elle adore ça !"

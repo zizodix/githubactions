@@ -1,0 +1,55 @@
+name: Matrices & Artifacts
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  schedule:
+    - cron: '0 0 * * 1' # tous les lundis à minuit
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      max-parallel: 2
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        node: [16, 18, 20]
+        exclude:
+          - os: ubuntu-latest
+            node: 16
+          - os: windows-latest
+            node: 18
+          - os: macos-latest
+            node: 20
+        include:
+          - os: windows-latest
+            node: 22
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+
+      - run: npm ci
+      - run: npm run build
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: app-${{ matrix.os }}-node${{ matrix.node }}
+          path: dist/
+
+  conditional-job:
+    needs: build
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: app-ubuntu-latest-node18
+          path: artifact
+
+      - run: echo "Déploiement simulé pour Ubuntu + Node 18"

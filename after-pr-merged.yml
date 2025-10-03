@@ -1,0 +1,14 @@
+name: After PR Merged Workflow
+
+on:
+  workflow_run:
+    workflows: ["PR Closed (Merged Only)"]
+    types:
+      - completed
+
+jobs:
+  say-follow-up:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Message
+        run: echo "Workflow suivant exécuté après la fin du précédent"
